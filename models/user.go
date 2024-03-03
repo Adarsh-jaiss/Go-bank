@@ -7,15 +7,21 @@ import (
 )
 
 type User struct {
-	ID                uint64         `json:"user_id"`
-	FirstName         string         `json:"first_name"`
-	LastName          string         `json:"last_time"`
-	Email             string         `json:"email"`
-	Password          string         `json:"password"`
-	PasswordChangedAt time.Time      `json:"password_changed_at"`
-	CreatedAt         time.Time      `json:"created_at"`
-	Accounts          []*Account     `json:"accounts"`     // Slice of accounts
-	Transactions      []*Transaction `json:"transactions"` // Slice of transactions
+	ID                uint64    `json:"user_id"`
+	FirstName         string    `json:"first_name"`
+	LastName          string    `json:"last_time"`
+	Email             string    `json:"email"`
+	Password          string    `json:"password"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
+}
+
+type UserAccount struct {
+	UserID            uint64 `json:"user_id"`
+	AccountNumber uint64 `json:"account_number"`
+	Balance       float64 `json:"balance"`
+	// Accounts          []*Account     `json:"accounts"`     // Slice of accounts
+	// Transactions      []*Transaction `json:"transactions"` // Slice of transactions
 }
 
 type Session struct {
