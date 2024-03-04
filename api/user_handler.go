@@ -34,12 +34,12 @@ func (h *UserHandler) HandlePostUser() gin.HandlerFunc {
 			return
 		}
 
-		userAccount, err := h.UserStore.InsertUser(c, &newUser)
+		res, err := h.UserStore.InsertUser(c,&newUser)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, userAccount)
+		c.JSON(http.StatusOK, res)
 	}
 }
