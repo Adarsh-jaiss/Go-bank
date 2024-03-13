@@ -29,7 +29,7 @@ Using interfaces and constructors, as i'm doing in this project, allows me to de
 - Start with Handling Users
 - After making User Handlers , Implement User Authentication
 - Then, Implement User Authorization
-- 
+- Add KYC method
 
 
 # Future
