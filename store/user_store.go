@@ -11,7 +11,7 @@ import (
 
 // UserStorer defines the interface for user operations.
 type UserStorer interface {
-	InsertUser(*gin.Context, *models.User) (uint64,error)
+	InsertUser(*gin.Context, *models.User) (*models.UserAccount,error)
 }
 
 // PostgresUserStore implements UserStorer for PostgreSQL database.
@@ -27,21 +27,21 @@ func NewPostgresUserStore(db *sql.DB) *PostgresUserStore {
 }
 
 // InsertUser inserts a new user into the database.
-func (p *PostgresUserStore) InsertUser(c *gin.Context, newUser *models.User) (uint64, error) {
+func (p *PostgresUserStore) InsertUser(c *gin.Context, newUser *models.User) (*models.UserAccount, error) {
   query := `
-  INSERT INTO users (first_name, lastname, email, password, password_changed_at, created_at)
+  INSERT INTO users (first_name, last_name, email, password, password_changed_at, created_at)
   VALUES ($1, $2, $3, $4, NOW(), NOW())
-  RETURNING id;  -- Add RETURNING clause to get the inserted ID
+  RETURNING first_name,last_name, email,account_number,balance;  -- Add RETURNING clause to get the inserted ID
 `
 
-  var userID uint64
+  var Createduser models.UserAccount
 
-  err := p.db.QueryRow(query, newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password).Scan(&userID)
+  err := p.db.QueryRow(query, newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password).Scan(&Createduser.FirstName,&Createduser.LastName,&Createduser.Email, &Createduser.AccountNumber,&Createduser.Balance)
 
   if err != nil {
-      return 0, fmt.Errorf("error inserting the user in the database: %v", err)
+      return nil, fmt.Errorf("error inserting the user in the database: %v", err)
   }
 
-  return userID, nil
+  return &Createduser, nil
 }
 

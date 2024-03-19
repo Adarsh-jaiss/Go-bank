@@ -27,15 +27,17 @@ func main() {
 func DropTable(db *sql.DB) error {
 	var err error
 
+	_, err = db.Exec("DROP SEQUENCE account_number_seq;")
+	if err != nil {
+		return fmt.Errorf("error dropping the tables: %w", err)
+	}
+
+
 	_, err = db.Exec("DROP TABLE users,ledger,sessions;")
 	if err != nil {
 		return fmt.Errorf("error dropping the tables: %w", err)
 	}
 
-	// _, err = db.Exec("DROP SEQUENCE account_number_seq;")
-	// if err != nil {
-	// 	return fmt.Errorf("error dropping the tables: %w", err)
-	// }
-
+	
 	return nil
 }
