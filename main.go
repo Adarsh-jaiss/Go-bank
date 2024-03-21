@@ -20,23 +20,21 @@ func main() {
 
 	defer db.Disconnect()
 
-	if err := db.CreateTable(); err != nil {
-		log.Fatal("Error creating table schema", err)
-	}
+		if err := db.CreateTable(); err != nil {
+			log.Fatal("Error creating table schema", err)
+		}
 
+		userStore := store.NewPostgresUserStore(db.DB)
+	    userHandler := api.NewUserHandler(userStore)
 
-
-	userStore := store.NewPostgresUserStore(db.DB)
-    userHandler := api.NewUserHandler(userStore)
-
-
-	app := gin.Default()
-	app.Group("api")
-	appV1 := app.Group("api/v1",)
+		app := gin.Default()
+		app.Group("api")
+		appV1 := app.Group("api/v1",)
 
 	// Versioned API routes
 	// This is user handlers
 	appV1.POST("/user", userHandler.HandlePostUser())
+	appV1.GET("/user/account", userHandler.HandleGetUser())		//gonna use it as AUTHENTICATION
 
 	log.Fatal(app.Run(":8080"))
 }

@@ -43,3 +43,21 @@ func (h *UserHandler) HandlePostUser() gin.HandlerFunc {
 		c.JSON(http.StatusOK, res)
 	}
 }
+
+func(h *UserHandler) HandleGetUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var user models.User
+		if err := ctx.ShouldBindJSON(&user); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		res, err := h.UserStore.GetUser(ctx, &user)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, res)
+	}
+}
