@@ -13,6 +13,8 @@ import (
 type UserStorer interface {
 	InsertUser(*gin.Context, *models.User) (*models.UserAccount, error)
 	GetUser(*gin.Context, *models.User) (*models.UserAccount, error)
+	GetUserByAccountNumber(*gin.Context, uint64) (*models.UserAccount, error)
+	GetUserByEmail(*gin.Context, string) (*models.User, error)
 }
 
 // PostgresUserStore implements UserStorer for PostgreSQL database.
@@ -56,4 +58,29 @@ func (p *PostgresUserStore) GetUser(c *gin.Context, user *models.User) (*models.
   }
 
   return &userAccount, nil
+}
+
+func(p *PostgresUserStore) GetUserByAccountNumber(c *gin.Context, accountNumber uint64) (*models.UserAccount, error) {
+	query := `SELECT first_name, last_name, email, account_number, balance FROM users WHERE account_number = $1`
+
+	var userAccount models.UserAccount
+	err := p.db.QueryRow(query, accountNumber).Scan(&userAccount.FirstName, &userAccount.LastName, &userAccount.Email, &userAccount.AccountNumber, &userAccount.Balance)
+	if err != nil {
+	return nil, fmt.Errorf("error getting the user from the database: %v", err)
+	}
+
+	return &userAccount, nil
+	
+}
+
+func (p *PostgresUserStore) GetUserByEmail(c *gin.Context, email string) (*models.User, error) {
+    query := `SELECT first_name, last_name, email, id, password FROM users WHERE email = $1`
+
+    var user models.User
+    err := p.db.QueryRow(query, email).Scan(&user.FirstName, &user.LastName, &user.Email, &user.ID, &user.Password)
+    if err != nil {
+        return nil, fmt.Errorf("error getting the user from the database: %v", err)
+    }
+
+    return &user, nil
 }

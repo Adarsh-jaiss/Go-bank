@@ -61,3 +61,4 @@ func(h *UserHandler) HandleGetUser() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, res)
 	}
 }
+

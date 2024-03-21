@@ -35,3 +35,11 @@ Using interfaces and constructors, as i'm doing in this project, allows me to de
 # Future
 - Create DB seeding and Add DB Dropping as well, for creating a fresh schema, if everything is okay!
 - Look for ways to integrate GRPC and protobuf into the project
+
+
+# API's - FLOW
+- Create ACccount --> Dashboard --> signup/user
+  
+Existing user
+- Login --> dashboard (hget user by email and password) --> Apply AUTH --> login/user
+- User can update their profile : auth/user/update
