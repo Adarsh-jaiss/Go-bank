@@ -19,17 +19,14 @@ func JWTAuthentication(userstore store.UserStorer) gin.HandlerFunc {
 		tokenStr := c.GetHeader("Authorization")
 		if tokenStr == "" {
 			fmt.Println("Token not present in the header")
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token not present in the header"})
-			c.Abort() // Stop further execution
-			return
+			c.JSON(http.StatusUnauthorized ,gin.H{"error": "Token not present in the header"})
 		}
 		fmt.Println("Token found in the header")
 
 		claims, err := ValidateTokens(tokenStr)
 		if err != nil {
 			fmt.Println("code fat rha hai bhai!!!!!!!!!:")
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			c.Abort() // Stop further execution
+			c.JSON(http.StatusUnauthorized , gin.H{"error": "Invalid token"})
 			return
 		}
 
@@ -43,7 +40,6 @@ func JWTAuthentication(userstore store.UserStorer) gin.HandlerFunc {
 
 		if time.Now().Unix() > expires {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "token expired"})
-			c.Abort() // Stop further execution
 			return
 		}
 
@@ -60,7 +56,6 @@ func JWTAuthentication(userstore store.UserStorer) gin.HandlerFunc {
 		if err != nil {
 			fmt.Println("Failed to get user by account number:", err) // Debug statement
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort() // Stop further execution
 			return
 		}
 
@@ -70,7 +65,6 @@ func JWTAuthentication(userstore store.UserStorer) gin.HandlerFunc {
 		c.Next()
 	}
 }
-
 
 func ValidateTokens(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {

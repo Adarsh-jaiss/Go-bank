@@ -1,10 +1,13 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/adarsh-jaiss/go-bank/models"
 	"github.com/adarsh-jaiss/go-bank/store"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type UserHandler struct {
@@ -34,7 +37,7 @@ func (h *UserHandler) HandlePostUser() gin.HandlerFunc {
 			return
 		}
 
-		res, err := h.UserStore.InsertUser(c,&newUser)
+		res, err := h.UserStore.InsertUser(c, &newUser)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -44,7 +47,7 @@ func (h *UserHandler) HandlePostUser() gin.HandlerFunc {
 	}
 }
 
-func(h *UserHandler) HandleGetUser() gin.HandlerFunc {
+func (h *UserHandler) HandleGetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var user models.User
 		if err := ctx.ShouldBindJSON(&user); err != nil {
@@ -62,3 +65,24 @@ func(h *UserHandler) HandleGetUser() gin.HandlerFunc {
 	}
 }
 
+func (h *UserHandler) HandleUpdateUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Parse account number from query parameters
+		accountNumberStr := c.Query("account_number")
+		accountNumber, err := strconv.ParseInt(accountNumberStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid account number"})
+			return
+		}
+		fmt.Println(accountNumber)
+
+		updatedUser, err := h.UserStore.UpdateUser(c, accountNumber)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
+			return
+		}
+
+		// Return updated user details
+		c.JSON(http.StatusOK, updatedUser)
+	}
+}

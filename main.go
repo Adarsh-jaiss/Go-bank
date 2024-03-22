@@ -36,8 +36,10 @@ func main() {
 
 	// Versioned API routes
 	// This is user handlers
-	appV1.POST("/signup/user", userHandler.HandlePostUser())
+	appV1.POST("user/signup", userHandler.HandlePostUser())
 	auth.POST("/user", authHandler.HandleAuthentication)		//gonna use it as AUTHENTICATION
+
+	appV1.PUT("/user/update", userHandler.HandleUpdateUser())
 
 	log.Fatal(app.Run(":8080"))
 }
